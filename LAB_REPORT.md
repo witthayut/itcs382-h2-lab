@@ -37,22 +37,44 @@ Ans: The parcels of the first run were kept only in the memory of the running pr
 ParcelRepository repository = new InMemoryParcelRepository();
 ```
 
-0.6 Commit of the switch to H2:
+0.6 Commit of the switch to H2: 1f6078a 
 
 0.7 Output of `SELECT * FROM PARCEL;` after you stored two parcels:
 
 ```text
-
+sql> SELECT * FROM PARCEL;
+CODE  | STUDENT_ID | PARCEL_SIZE | STATUS | LOCKER_NUMBER
+P1001 | S1001      | SMALL       | STORED | 1
+P1002 | S1002      | LARGE       | STORED | 3
+(2 rows, 27 ms)
 ```
 
 0.8 Explain why ParcelPoint could not start while the H2 Shell was open, and identify the class that wrote the message `Cannot create the PARCEL table`.
+Ans: The H2 Shell was still open, and H2 only allows one program to use the database file at a time. It locked parcelpoint.mv.db for the Shell, so ParcelPoint failed when it tried to open the same file. The message "Cannot create the PARCEL table" was written by the H2ParcelRepository class, in its constructor.
+
+
 
 0.9 Explain why `staff` shows no parcel while `find` shows each one, and why all three lockers look free.
+Ans: find use findByteCode command which run in SQL with the DB.
 
 0.11 Your findAll method:
 
 ```java
-
+    @Override
+    public List<Parcel> findAll() {
+        String sql = "SELECT * FROM PARCEL ORDER BY CODE";
+        List<Parcel> parcels = new ArrayList<>();
+        try (Connection connection = connect();
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet row = statement.executeQuery()) {
+            while (row.next()) {
+                parcels.add(toParcel(row));
+            }
+        } catch (SQLException e) {
+            throw new IllegalStateException("Cannot read the parcels", e);
+        }
+        return parcels;
+    }
 ```
 
 Commit that adds findAll:
