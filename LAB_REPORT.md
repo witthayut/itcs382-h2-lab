@@ -13,22 +13,28 @@ Repository URL:
 
 ## Part 0. From a store in memory to H2
 
-Commit of the starter, before any change:
+Commit of the starter, before any change:4542ccc 
 
 0.3 Your prediction for `staff`, written before the second run:
+
+The terminal will show the same result as before: both parcels, P1001 in locker 1 and P1002 in locker 3, and Free lockers: 1.
 
 Output of the second run, for `staff` and `quit`:
 
 ```text
-
+> staff
+Free lockers: 3
+> quit
 ```
 
 State in one sentence where you think the parcels of the first run were kept.
+Ans: The parcels of the first run were kept only in the memory of the running program, in the map inside InMemoryParcelRepository, so they were lost when the program ended.
+
 
 0.5 The line of Main that you would change to keep the parcels somewhere else:
 
 ```java
-
+ParcelRepository repository = new InMemoryParcelRepository();
 ```
 
 0.6 Commit of the switch to H2:
